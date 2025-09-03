@@ -149,6 +149,103 @@ func RunCLI() {
 			return
 		}
 		regit.Push(args[0])
+	case "help":
+		fmt.Println(`Available commands:
+			init
+			add <file>
+			commit "<message>"
+			status
+			log
+			remove <file>
+			show <file>
+			ls-objects
+			checkout
+			diff
+			list-commits
+			file-history <file>
+			reset
+			istracked <file>
+			get-file-version <file> <commitIdx>
+			commit-files <commitIdx>
+			remove-object <oid>
+			commit-count
+			find-commit-by-message "<msg>"
+			find-file-oids <file>
+			restore-file-from-commit <file> <commitIdx>
+			purge-unreferenced-objects
+			get-commit-message <commitIdx>
+			get-commit-date <commitIdx>
+			get-commit-oid-for-file <file> <commitIdx>
+			list-all-tracked-files
+			push <remote_path>
+			pull <remote_path>
+			clone <remote_path> <target_path>
+			fetch <remote_path>
+			merge <remote_path>
+			merge-to-remote <remote_path>
+			help`)
+		return
+	case "stash-save":
+		regit.StashSave()
+	case "stash-apply":
+		regit.StashApply()
+	case "stash-drop":
+		regit.StashDrop()
+	case "blame":
+		for _, file := range args {
+			regit.Blame(file)
+		}
+	case "revert":
+		for _, arg := range args {
+			idx, err := strconv.Atoi(arg)
+			if err != nil {
+				fmt.Println("Invalid commit index")
+				continue
+			}
+			regit.Revert(idx)
+		}
+	case "cherry-pick":
+		for _, arg := range args {
+			idx, err := strconv.Atoi(arg)
+			if err != nil {
+				fmt.Println("Invalid commit index")
+				continue
+			}
+			regit.CherryPick(idx)
+		}
+	case "rename":
+		if len(args) < 2 {
+			fmt.Println("Usage: rename <oldName> <newName>")
+			return
+		}
+		regit.Rename(args[0], args[1])
+	case "move":
+		if len(args) < 2 {
+			fmt.Println("Usage: move <file> <newDir>")
+			return
+		}
+		regit.Move(args[0], args[1])
+	case "show-commit-files":
+		for _, arg := range args {
+			idx, err := strconv.Atoi(arg)
+			if err != nil {
+				fmt.Println("Invalid commit index")
+				continue
+			}
+			regit.ShowCommitFiles(idx)
+		}
+	case "show-commit-diff":
+		if len(args) < 3 {
+			fmt.Println("Usage: show-commit-diff <file> <commitIdxA> <commitIdxB>")
+			return
+		}
+		idxA, errA := strconv.Atoi(args[1])
+		idxB, errB := strconv.Atoi(args[2])
+		if errA != nil || errB != nil {
+			fmt.Println("Invalid commit index")
+			return
+		}
+		regit.ShowCommitDiff(args[0], idxA, idxB)
 	default:
 		fmt.Println("Unknown command:", cmd)
 	}
