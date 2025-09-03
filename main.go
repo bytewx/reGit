@@ -1,13 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"os"
-	"strings"
-
-	"regit/regit"
-)
-
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: re-git <command> [args]")
